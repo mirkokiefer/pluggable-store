@@ -1,5 +1,7 @@
 #PluggableStore
-A unified interface to key-value stores.  
+A unified interface to key-value stores.
+
+
 It comes bundled with these adapters:
 * in-memory
 * HTML5 local storage (only browser)
