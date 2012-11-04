@@ -1,11 +1,12 @@
 
-{server} = require '../lib/index'
+{server, pipe} = require '../lib/index'
 assert = require 'assert'
-
-store = server().memory()
+createMemoryStore = server().memory
+store1 = createMemoryStore()
+store2 = createMemoryStore()
 
 assertEvent = (emitter, [event, expectedArgs], cb) ->
-  emitter.on event, (args...) ->
+  emitter.once event, (args...) ->
     for each, i in expectedArgs
       assert.equal args[i], each
     cb()
@@ -19,20 +20,25 @@ assertEventsSerial = (emitter, events, cb) ->
 describe 'PluggableStore using Memory adapter', () ->
   describe 'read/write', () ->
     it 'should write and read an object sync', () ->
-      store.write 'path1', 'value1'
-      assert.equal store.read('path1'), 'value1'
+      store1.write 'path1', 'value1'
+      assert.equal store1.read('path1'), 'value1'
     it 'should write and read an object async', (done) ->
-      store.write 'path2', 'value2', () ->
-        store.read 'path2', (err, res) ->
+      store1.write 'path2', 'value2', () ->
+        store1.read 'path2', (err, res) ->
           assert.equal res, 'value2'
           done()
   describe 'events', ->
     it 'should trigger write event on write', (done) ->
-      assertEventsSerial store, [
+      assertEventsSerial store1, [
         ['write', ['path3', 'value3']]
         ['written', ['path3', 'value3']]
       ], done
-      store.write 'path3', 'value3'
+      store1.write 'path3', 'value3'
     it 'should trigger read event on read', (done) ->
-      assertEvent store, ['read', ['path3']], done
-      store.read 'path3'
+      assertEvent store1, ['read', ['path3']], done
+      store1.read 'path3'
+  describe 'pipe', ->
+    it 'should pipe the writes on one store to another', () ->
+      pipe store1, store2
+      store1.write 'path4', 'value4'
+      assert.equal store2.read('path4'), 'value4'

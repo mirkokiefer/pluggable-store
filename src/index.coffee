@@ -20,6 +20,9 @@ class PluggableStore extends require('eventemitter2').EventEmitter2
     else @adapter.read key, cb
   remove: (key, cb) -> @adapter.remove key, cb
 
+pipe = (fromStore, toStore) ->
+  fromStore.on 'write', (key, value) -> toStore.write key, value
+
 wrapAdapter = (path, isSync) ->
   (args...) ->
     adapter = require path
@@ -33,3 +36,4 @@ module.exports =
   server: () ->
     fileSystem: wrapAdapter('./filesystem')
     memory: wrapAdapter('./memory', true)
+  pipe: pipe
