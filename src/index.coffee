@@ -1,11 +1,11 @@
 
 class PluggableStore extends require('eventemitter2').EventEmitter2
-  constructor: ({@adapter, @adapterIsSync}) ->
+  constructor: ({@adapter, @isSync}) ->
   write: (key, value, cb) ->
     obj = this
     written = -> obj.emit 'written', key, value
     @emit 'write', key, value
-    if @adapterIsSync
+    if @isSync
       res = @adapter.write key, value
       written()
       if cb then cb null, res else res
@@ -14,7 +14,7 @@ class PluggableStore extends require('eventemitter2').EventEmitter2
       cb err, res
   read: (key, cb) ->
     @emit 'read', key
-    if @adapterIsSync
+    if @isSync
       res = @adapter.read key
       if cb then cb null, res else res
     else @adapter.read key, cb
@@ -26,7 +26,7 @@ pipe = (fromStore, toStore) ->
 wrapAdapter = (path, isSync) ->
   (args...) ->
     adapter = require path
-    new PluggableStore adapter: new adapter(args...), adapterIsSync: isSync
+    new PluggableStore adapter: new adapter(args...), isSync: isSync
 
 module.exports =
   PluggableStore: PluggableStore
