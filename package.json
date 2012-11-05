@@ -1,6 +1,6 @@
 {
   "name": "pluggable-store",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A unified interface to key-value stores",
   "main": "lib/index.js",
   "directories": {
