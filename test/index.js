@@ -45,10 +45,43 @@
         store1.write('path1', 'value1');
         return assert.equal(store1.read('path1'), 'value1');
       });
-      return it('should write and read an object async', function(done) {
+      it('should write and read an object async', function(done) {
         return store1.write('path2', 'value2', function() {
           return store1.read('path2', function(err, res) {
             assert.equal(res, 'value2');
+            return done();
+          });
+        });
+      });
+      it('should write and read multiple objects', function() {
+        var data;
+        data = [
+          {
+            key: 'mult1',
+            value: 'multval1'
+          }, {
+            key: 'mult2',
+            value: 'multval2'
+          }
+        ];
+        store1.writeAll(data);
+        assert.equal(store1.read('mult1'), 'multval1');
+        return assert.equal(store1.read('mult2'), 'multval2');
+      });
+      return it('should write and read multiple objects async', function(done) {
+        var data;
+        data = [
+          {
+            key: 'mult1',
+            value: 'multval1'
+          }, {
+            key: 'mult2',
+            value: 'multval2'
+          }
+        ];
+        return store1.writeAll(data, function() {
+          return store1.read('mult1', function(err, res) {
+            assert.equal(res, 'multval1');
             return done();
           });
         });

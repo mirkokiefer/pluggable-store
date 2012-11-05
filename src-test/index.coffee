@@ -27,6 +27,17 @@ describe 'PluggableStore using Memory adapter', () ->
         store1.read 'path2', (err, res) ->
           assert.equal res, 'value2'
           done()
+    it 'should write and read multiple objects', ->
+      data = [{key: 'mult1', value: 'multval1'}, {key: 'mult2', value: 'multval2'}]
+      store1.writeAll data
+      assert.equal store1.read('mult1'), 'multval1'
+      assert.equal store1.read('mult2'), 'multval2'
+    it 'should write and read multiple objects async', (done) ->
+      data = [{key: 'mult1', value: 'multval1'}, {key: 'mult2', value: 'multval2'}]
+      store1.writeAll data, ->
+        store1.read 'mult1', (err, res) ->
+          assert.equal res, 'multval1'
+          done()
   describe 'events', ->
     it 'should trigger write event on write', (done) ->
       assertEventsSerial store1, [
