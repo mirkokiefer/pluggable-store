@@ -68,7 +68,7 @@
         assert.equal(store1.read('mult1'), 'multval1');
         return assert.equal(store1.read('mult2'), 'multval2');
       });
-      return it('should write and read multiple objects async', function(done) {
+      it('should write and read multiple objects async', function(done) {
         var data;
         data = [
           {
@@ -85,6 +85,12 @@
             return done();
           });
         });
+      });
+      return it('should delete values', function() {
+        store1.write('key1', 'value1');
+        assert.equal(store1.read('key1'), 'value1');
+        store1.remove('key1');
+        return assert.equal(store1.read('key1'), void 0);
       });
     });
     describe('events', function() {

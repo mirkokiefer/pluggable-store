@@ -38,6 +38,11 @@ describe 'PluggableStore using Memory adapter', () ->
         store1.read 'mult1', (err, res) ->
           assert.equal res, 'multval1'
           done()
+    it 'should delete values', ->
+      store1.write 'key1', 'value1'
+      assert.equal store1.read('key1'), 'value1'
+      store1.remove 'key1'
+      assert.equal store1.read('key1'), undefined
   describe 'events', ->
     it 'should trigger write event on write', (done) ->
       assertEventsSerial store1, [
