@@ -16,8 +16,10 @@ assertEventsSerial = (emitter, events, cb) ->
     assertEvent emitter, first, -> assertEventsSerial emitter, rest, cb
 
 store1 = null
-
+fileStore = null
 beforeEach -> store1 = createMemoryStore()
+before -> fileStore = server().fileSystem(process.env.HOME+'/test-store')
+after (done) -> fileStore.adapter.delete done
 
 describe 'PluggableStore using Memory adapter', () ->
   describe 'read/write', () ->
@@ -61,3 +63,10 @@ describe 'PluggableStore using Memory adapter', () ->
       pipe store1, store2
       store1.write 'key4', 'value4'
       assert.equal store2.read('key4'), 'value4'
+  describe 'using FileSystem adapter', ->
+    describe 'read/write', () ->
+      it 'should write and read an object', (done) ->
+        fileStore.write 'key2', 'value2', () ->
+          fileStore.read 'key2', (err, res) ->
+            assert.equal res, 'value2'
+            done()
