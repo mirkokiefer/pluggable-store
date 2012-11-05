@@ -2,8 +2,6 @@
 {server, pipe} = require '../lib/index'
 assert = require 'assert'
 createMemoryStore = server().memory
-store1 = createMemoryStore()
-store2 = createMemoryStore()
 
 assertEvent = (emitter, [event, expectedArgs], cb) ->
   emitter.once event, (args...) ->
@@ -17,14 +15,18 @@ assertEventsSerial = (emitter, events, cb) ->
     [first, rest...] = events
     assertEvent emitter, first, -> assertEventsSerial emitter, rest, cb
 
+store1 = null
+
+beforeEach -> store1 = createMemoryStore()
+
 describe 'PluggableStore using Memory adapter', () ->
   describe 'read/write', () ->
     it 'should write and read an object sync', () ->
-      store1.write 'path1', 'value1'
-      assert.equal store1.read('path1'), 'value1'
+      store1.write 'key1', 'value1'
+      assert.equal store1.read('key1'), 'value1'
     it 'should write and read an object async', (done) ->
-      store1.write 'path2', 'value2', () ->
-        store1.read 'path2', (err, res) ->
+      store1.write 'key2', 'value2', () ->
+        store1.read 'key2', (err, res) ->
           assert.equal res, 'value2'
           done()
     it 'should write and read multiple objects', ->
@@ -46,15 +48,16 @@ describe 'PluggableStore using Memory adapter', () ->
   describe 'events', ->
     it 'should trigger write event on write', (done) ->
       assertEventsSerial store1, [
-        ['write', ['path3', 'value3']]
-        ['written', ['path3', 'value3']]
+        ['write', ['key3', 'value3']]
+        ['written', ['key3', 'value3']]
       ], done
-      store1.write 'path3', 'value3'
+      store1.write 'key3', 'value3'
     it 'should trigger read event on read', (done) ->
-      assertEvent store1, ['read', ['path3']], done
-      store1.read 'path3'
+      assertEvent store1, ['read', ['key3']], done
+      store1.read 'key3'
   describe 'pipe', ->
-    it 'should pipe the writes on one store to another', () ->
+    it 'should pipe the writes on one store to another', ->
+      store2 = createMemoryStore()
       pipe store1, store2
-      store1.write 'path4', 'value4'
-      assert.equal store2.read('path4'), 'value4'
+      store1.write 'key4', 'value4'
+      assert.equal store2.read('key4'), 'value4'
