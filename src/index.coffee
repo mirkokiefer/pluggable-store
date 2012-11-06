@@ -11,7 +11,7 @@ class PluggableStore extends require('eventemitter2').EventEmitter2
       if cb then cb null, res else res
     else @adapter.write key, value, (err, res) ->
       written()
-      cb err, res
+      if cb then cb err, res
   read: (key, cb) ->
     @emit 'read', key
     if @isSync
