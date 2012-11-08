@@ -49,8 +49,8 @@ wrapAdapter = (path, isSync) ->
 
 module.exports =
   PluggableStore: PluggableStore
-  browser: () ->
+  browser:
     localStorage: wrapAdapter('./localstore', true)
-  server: () ->
+  server:
     fileSystem: wrapAdapter('./filesystem')
   memory: wrapAdapter('./memory', true)

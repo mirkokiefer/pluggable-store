@@ -1,7 +1,6 @@
 
-{server, pipe} = require '../lib/index'
+{server, memory} = require '../lib/index'
 assert = require 'assert'
-createMemoryStore = server().memory
 
 assertEvent = (emitter, [event, expectedArgs], cb) ->
   emitter.once event, (args...) ->
@@ -17,8 +16,8 @@ assertEventsSerial = (emitter, events, cb) ->
 
 store1 = null
 fileStore = null
-beforeEach -> store1 = createMemoryStore()
-before -> fileStore = server().fileSystem(process.env.HOME+'/test-store')
+beforeEach -> store1 = memory()
+before -> fileStore = server.fileSystem(process.env.HOME+'/test-store')
 after (done) -> fileStore.adapter.delete done
 
 describe 'PluggableStore using Memory adapter', () ->
@@ -59,8 +58,8 @@ describe 'PluggableStore using Memory adapter', () ->
       store1.read 'key3'
   describe 'pipe', ->
     it 'should pipe the writes on one store to another', ->
-      store2 = createMemoryStore()
-      pipe store1, store2
+      store2 = memory()
+      store1.pipe store2
       store1.write 'key4', 'value4'
       assert.equal store2.read('key4'), 'value4'
   describe 'using FileSystem adapter', ->
