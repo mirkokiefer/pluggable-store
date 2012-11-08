@@ -57,4 +57,5 @@ module.exports =
   server: () ->
     fileSystem: wrapAdapter('./filesystem')
     memory: wrapAdapter('./memory', true)
+  memory: wrapAdapter('./memory', true)
   pipe: pipe
