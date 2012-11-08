@@ -40,9 +40,7 @@ class PluggableStore extends require('eventemitter2').EventEmitter2
     else
       obj = this
       async.map keys, ((each, cb) -> obj.remove each, cb), cb
-
-pipe = (fromStore, toStore) ->
-  fromStore.on 'write', (key, value) -> toStore.write key, value
+  pipe: (toStore) -> @on 'write', (key, value) -> toStore.write key, value
 
 wrapAdapter = (path, isSync) ->
   (args...) ->
@@ -53,9 +51,6 @@ module.exports =
   PluggableStore: PluggableStore
   browser: () ->
     localStorage: wrapAdapter('./localstore', true)
-    memory: wrapAdapter('./memory', true)
   server: () ->
     fileSystem: wrapAdapter('./filesystem')
-    memory: wrapAdapter('./memory', true)
   memory: wrapAdapter('./memory', true)
-  pipe: pipe
