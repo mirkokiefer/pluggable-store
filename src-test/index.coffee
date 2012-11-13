@@ -1,6 +1,7 @@
 
 {server, memory} = require '../lib/index'
 assert = require 'assert'
+{contains} = require 'underscore'
 
 assertEvent = (emitter, [event, expectedArgs], cb) ->
   emitter.once event, (args...) ->
@@ -19,7 +20,7 @@ fileStore = null
 beforeEach -> store1 = memory()
 before -> fileStore = server.fileSystem(process.env.HOME+'/test-store')
 after (done) -> fileStore.adapter.delete done
-
+testData = [{key: 'mult1', value: 'multval1'}, {key: 'mult2', value: 'multval2'}]
 describe 'PluggableStore using Memory adapter', () ->
   describe 'read/write', () ->
     it 'should write and read an object sync', () ->
@@ -31,13 +32,11 @@ describe 'PluggableStore using Memory adapter', () ->
           assert.equal res, 'value2'
           done()
     it 'should write and read multiple objects', ->
-      data = [{key: 'mult1', value: 'multval1'}, {key: 'mult2', value: 'multval2'}]
-      store1.writeAll data
+      store1.writeAll testData
       assert.equal store1.read('mult1'), 'multval1'
       assert.equal store1.read('mult2'), 'multval2'
     it 'should write and read multiple objects async', (done) ->
-      data = [{key: 'mult1', value: 'multval1'}, {key: 'mult2', value: 'multval2'}]
-      store1.writeAll data, ->
+      store1.writeAll testData, ->
         store1.read 'mult1', (err, res) ->
           assert.equal res, 'multval1'
           done()
@@ -56,16 +55,29 @@ describe 'PluggableStore using Memory adapter', () ->
     it 'should trigger read event on read', (done) ->
       assertEvent store1, ['read', ['key3']], done
       store1.read 'key3'
+  describe 'keys', ->
+    it 'should return all keys', ->
+      store1.writeAll testData
+      keys = store1.keys()
+      assert.ok contains(keys, key) for {key} in testData
+      assert.equal keys.length, testData.length
   describe 'pipe', ->
     it 'should pipe the writes on one store to another', ->
       store2 = memory()
       store1.pipe store2
       store1.write 'key4', 'value4'
       assert.equal store2.read('key4'), 'value4'
-  describe 'using FileSystem adapter', ->
-    describe 'read/write', () ->
-      it 'should write and read an object', (done) ->
-        fileStore.write 'key2', 'value2', () ->
-          fileStore.read 'key2', (err, res) ->
-            assert.equal res, 'value2'
-            done()
+describe 'using FileSystem adapter', ->
+  describe 'read/write', () ->
+    it 'should write and read an object', (done) ->
+      fileStore.write 'key2', 'value2', () ->
+        fileStore.read 'key2', (err, res) ->
+          assert.equal res, 'value2'
+          done()
+  describe 'keys', ->
+    it 'should return all keys', (done) ->
+      store1.writeAll testData, ->
+        store1.keys (err, keys) ->
+          assert.ok contains(keys, key) for {key} in testData
+          assert.equal keys.length, testData.length
+          done()

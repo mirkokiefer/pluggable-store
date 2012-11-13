@@ -1,6 +1,6 @@
 {
   "name": "pluggable-store",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A unified interface to key-value stores",
   "main": "lib/index.js",
   "directories": {
@@ -17,7 +17,8 @@
     "eventemitter2": "~0.4.10"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "underscore": "*"
   },
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
   "license": "BSD",

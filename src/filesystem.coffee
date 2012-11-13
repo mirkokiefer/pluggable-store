@@ -10,7 +10,8 @@ class FileSystem
   write: (path, data, cb) -> fs.writeFile @path(path), data, 'utf8', cb
   read: (path, cb) -> fs.readFile @path(path), 'utf8', cb
   remove: (path, cb) -> fs.unlink @path(path), cb
-  path: (fileName) -> resolvePath @rootPath, fileName + '.txt'
+  path: (fileName) -> resolvePath @rootPath, fileName
   delete: (cb) -> removeDir @rootPath, cb
+  keys: (cb) -> fs.readdir @rootPath, cb
 
 module.exports = FileSystem

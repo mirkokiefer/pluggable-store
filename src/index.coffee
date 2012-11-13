@@ -40,6 +40,11 @@ class PluggableStore extends require('eventemitter2').EventEmitter2
     else
       obj = this
       async.map keys, ((each, cb) -> obj.remove each, cb), cb
+  keys: (cb) ->
+    if @isSync
+      res = @adapter.keys()
+      if cb then cb null, res else res
+    else @adapter.keys cb
   pipe: (toStore) -> @on 'write', (key, value) -> toStore.write key, value
 
 wrapAdapter = (requireFun, isSync) ->
