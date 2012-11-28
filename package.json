@@ -6,9 +6,6 @@
   "directories": {
     "test": "test"
   },
-  "scripts": {
-    "test": "mocha"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mirkok/pluggable-store.git"
@@ -17,8 +14,13 @@
     "eventemitter2": "~0.4.10"
   },
   "devDependencies": {
-    "mocha": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "mocha": "~1.6.0",
+    "coffee-script": "~1.4.0"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --compilers coffee:coffee-script",
+    "build": "./node_modules/.bin/coffee -o ./lib -cw ./src"
   },
   "author": "Mirko Kiefer <mail@mirkokiefer.com>",
   "license": "BSD",
