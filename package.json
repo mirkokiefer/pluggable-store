@@ -1,6 +1,6 @@
 {
   "name": "pluggable-store",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "A unified interface to key-value stores",
   "main": "lib/index.js",
   "directories": {
@@ -11,7 +11,8 @@
     "url": "https://github.com/mirkok/pluggable-store.git"
   },
   "dependencies": {
-    "eventemitter2": "~0.4.10"
+    "eventemitter2": "~0.4.10",
+    "async": "~0.1.22"
   },
   "devDependencies": {
     "underscore": "*",
