@@ -36,11 +36,10 @@ wrapAdapter = (requireFun) ->
     adapter = requireFun()
     new PluggableStore adapter: new adapter(args...)
 
-module.exports =
-  PluggableStore: PluggableStore
-  browser:
-    localStorage: wrapAdapter -> require './localstorage'
-  server:
-    fileSystem: wrapAdapter -> require './filesystem'
-  memory: wrapAdapter -> require './memory'
+PluggableStore.browser =
+  localStorage: wrapAdapter -> require './localstorage'
+PluggableStore.server =
+  fileSystem: wrapAdapter -> require './filesystem'
+PluggableStore.memory = wrapAdapter -> require './memory'
 
+module.exports = PluggableStore
