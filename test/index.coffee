@@ -19,7 +19,7 @@ store1 = null
 fileStore = null
 beforeEach -> store1 = memory()
 before -> fileStore = server.fileSystem(process.env.HOME+'/test-store')
-after (done) -> fileStore.adapter.delete done
+after (done) -> fileStore.removeStore done
 testData = [{key: 'mult1', value: 'multval1'}, {key: 'mult2', value: 'multval2'}]
 describe 'PluggableStore using Memory adapter', () ->
   describe 'read/write', () ->
@@ -62,6 +62,13 @@ describe 'PluggableStore using Memory adapter', () ->
         store2.read 'key4', (err, res) ->
           assert.equal res, 'value4'
 describe 'using FileSystem adapter', ->
+  describe 'creation', ->
+    it 'should check if filestore is created', (done) ->
+      fileStore.createdStore (err, created) ->
+        assert.equal created, false
+        done()
+    it 'should create the filestore', (done) ->
+      fileStore.createStore done
   describe 'read/write', () ->
     it 'should write and read an object', (done) ->
       fileStore.write 'key2', 'value2', () ->
