@@ -1,7 +1,7 @@
 
 {server, memory} = require '../lib/index'
 assert = require 'assert'
-genericStoreTests = require './generic-tests'
+genericStoreTests = require 'pluggable-store-tests'
 
 assertEvent = (emitter, [event, expectedArgs], cb) ->
   emitter.once event, (args...) ->

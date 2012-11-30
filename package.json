@@ -17,7 +17,8 @@
   "devDependencies": {
     "underscore": "*",
     "mocha": "~1.6.0",
-    "coffee-script": "~1.4.0"
+    "coffee-script": "~1.4.0",
+    "pluggable-store-tests": "0.0.1"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha --compilers coffee:coffee-script",
